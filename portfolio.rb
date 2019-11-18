@@ -12,7 +12,8 @@ class Portfolio
     date2 = format_date(Time.new(_date2))
     profit_date1 = self.stock.inject(0) {|total_price, stock| stock.price(date1) + total_price} / self.stock.count
     profit_date2 = self.stock.inject(0) {|total_price, stock| stock.price(date2) + total_price} / self.stock.count
-    
+    profit = profit_date1 - profit_date2
+    annualized_return =  
   end
 
   private
