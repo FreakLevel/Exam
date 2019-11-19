@@ -1,28 +1,42 @@
 # frozen_string_literal: true
 
+# Class PortFolio to get profit of stocks
 class Portfolio
   attr_accessor :stocks
-  
+
   def initializer(stocks:)
     self.stocks = stocks
   end
 
-  def profit(date1=today_date, date2=today_date)
-    date1 = format_date(Time.new(_date1))
-    date2 = format_date(Time.new(_date2))
-    profit_date1 = self.stock.inject(0) {|total_price, stock| stock.price(date1) + total_price} / self.stock.count
-    profit_date2 = self.stock.inject(0) {|total_price, stock| stock.price(date2) + total_price} / self.stock.count
-    profit = profit_date1 - profit_date2
-    annualized_return =  
+  def profit(date_start, date_end)
+    date_start = format_date(Time.new(date_start))
+    date_end = format_date(Time.new(date_end))
+    profit_date_start = avg_stock_by_date(date_start)
+    profit_date_end = avg_stock_by_date(date_end)
+    profit = profit_date_start - profit_date_end
+    difference_in_days = (date_start - date_end).to_i
+    cumulative_return = profit / profit_date_start
+    annualized = annualized_return(cumulative_return, difference_in_days)
+    { profit: profit, annualized_return: annualized }
   end
 
   private
 
-  def today_date
-    format_date(Time.now)
-  end
-
   def format_date(date)
     date.strftime('%Y-%m-%d')
+  end
+
+  def avg_stock_by_date(date)
+    total_price_by_date(date) / stock.count
+  end
+
+  def total_price_by_date(date)
+    stock.inject(0) do |total_price, stock|
+      stock.price(date) + total_price
+    end
+  end
+
+  def annualized_return(cumulative_return, difference_in_days)
+    ((1 + cumulative_return) ^ (365 / difference_in_days)) - 1
   end
 end
