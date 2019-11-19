@@ -4,7 +4,7 @@
 class Portfolio
   attr_accessor :stocks
 
-  def initializer(stocks:)
+  def initializer(stocks)
     @stocks = stocks
   end
 
