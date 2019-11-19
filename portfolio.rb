@@ -5,7 +5,7 @@ class Portfolio
   attr_accessor :stocks
 
   def initializer(stocks:)
-    self.stocks = stocks
+    @stocks = stocks
   end
 
   def profit(date_start, date_end)
