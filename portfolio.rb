@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'date'
+
 # Class PortFolio to get profit of stocks
 class Portfolio
   attr_accessor :stocks
@@ -9,21 +11,33 @@ class Portfolio
   end
 
   def profit(date_start, date_end)
-    date_start = format_date(Time.new(date_start))
-    date_end = format_date(Time.new(date_end))
-    profit_date_start = avg_stock_by_date(date_start)
-    profit_date_end = avg_stock_by_date(date_end)
-    profit = profit_date_start - profit_date_end
-    difference_in_days = (date_start - date_end).to_i
+    dates = format_dates(date_start, date_end)
+    profit = calculate_profit(dates)
+    difference_in_days = (dates[:end] - dates[:start]).to_i
     cumulative_return = profit / profit_date_start
     annualized = annualized_return(cumulative_return, difference_in_days)
     response_profit(profit, annualized)
   end
 
   private
-
-  def format_date(date)
-    date.strftime('%Y-%m-%d')
+  
+  def format_dates(date_start, date_end)
+    {
+      start: Date.parse(date_start),
+      end: Date.parse(date_end)
+    }
+  end
+  
+  def price_dates(dates)
+    {
+      start: avg_stock_by_date(dates[:start]),
+      end: avg_stock_by_date(dates[:end])
+    }
+  end
+  
+  def calculate_profit(dates)
+    prices_dates = price_dates(dates)
+    prices_dates[:end] - prices_dates[:start]
   end
 
   def avg_stock_by_date(date)
