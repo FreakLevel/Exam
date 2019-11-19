@@ -12,11 +12,8 @@ class Portfolio
 
   def profit(date_start, date_end)
     dates = format_dates(date_start, date_end)
-    prices_dates = price_dates(dates)
-    profit = prices_dates[:end] - prices_dates[:start]
-    difference_in_days = (dates[:end] - dates[:start]).to_i
-    cumulative_return = profit / prices_dates[:start]
-    annualized = annualized_return(cumulative_return, difference_in_days)
+    profit = calculate_profit(dates)
+    annualized = annualized_return(dates, cumulative_return)
     response_profit(profit, annualized)
   end
 
@@ -35,6 +32,11 @@ class Portfolio
       end: avg_stock_by_date(dates[:end])
     }
   end
+  
+  def calculate_profit(dates)
+    prices_dates = price_dates(dates)
+    prices_dates[:end] - prices_dates[:start]
+  end
 
   def avg_stock_by_date(date)
     total_price_by_date(date) / stock.count
@@ -46,7 +48,10 @@ class Portfolio
     end
   end
 
-  def annualized_return(cumulative_return, difference_in_days)
+  def annualized_return(dates, cumulative_return)
+    prices_dates = price_dates(dates)
+    difference_in_days = (dates[:end] - dates[:start]).to_i
+    profit / prices_dates[:start]
     ((1 + cumulative_return) ^ (365 / difference_in_days)) - 1
   end
   
