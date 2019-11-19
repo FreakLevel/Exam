@@ -17,7 +17,7 @@ class Portfolio
     difference_in_days = (date_start - date_end).to_i
     cumulative_return = profit / profit_date_start
     annualized = annualized_return(cumulative_return, difference_in_days)
-    { profit: profit, annualized_return: annualized }
+    response_profit(profit, annualized)
   end
 
   private
@@ -38,5 +38,9 @@ class Portfolio
 
   def annualized_return(cumulative_return, difference_in_days)
     ((1 + cumulative_return) ^ (365 / difference_in_days)) - 1
+  end
+  
+  def response_profit(profit, annualized_return)
+    { profit: profit, annualized_return: annualized }
   end
 end
