@@ -13,26 +13,26 @@ class Portfolio
   def profit(date_start, date_end)
     dates = format_dates(date_start, date_end)
     profit = calculate_profit(dates)
-    annualized = annualized_return(dates, cumulative_return)
+    annualized = annualized_return(dates)
     response_profit(profit, annualized)
   end
 
   private
-  
+
   def format_dates(date_start, date_end)
     {
       start: Date.parse(date_start),
       end: Date.parse(date_end)
     }
   end
-  
+
   def price_dates(dates)
     {
       start: avg_stock_by_date(dates[:start]),
       end: avg_stock_by_date(dates[:end])
     }
   end
-  
+
   def calculate_profit(dates)
     prices_dates = price_dates(dates)
     prices_dates[:end] - prices_dates[:start]
@@ -48,14 +48,14 @@ class Portfolio
     end
   end
 
-  def annualized_return(dates, cumulative_return)
+  def annualized_return(dates)
     prices_dates = price_dates(dates)
     difference_in_days = (dates[:end] - dates[:start]).to_i
-    profit / prices_dates[:start]
+    cumulative_return = profit / prices_dates[:start]
     ((1 + cumulative_return) ^ (365 / difference_in_days)) - 1
   end
-  
+
   def response_profit(profit, annualized_return)
-    { profit: profit, annualized_return: annualized }
+    { profit: profit, annualized_return: annualized_return }
   end
 end
